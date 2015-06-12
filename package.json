@@ -1,0 +1,13 @@
+{
+  "name": "Watcher",
+  "version": "0.0.1",
+  "dependencies": {
+    "fs": "0.0.2",
+    "express": "~4.12.4",
+    "tail": "~0.4.0",
+    "console-highlight": "~0.1.0",
+    "node-notifier": "~4.2.1",
+    "path": "~0.11.14"
+  },
+  "devDependencies": {}
+}
