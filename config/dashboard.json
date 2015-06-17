@@ -1,0 +1,9 @@
+{
+	"logpath" : "/var/www/mdm-web/protected/runtime/application.log",
+	"label" : "Dashboard",
+	"immediate" : false,
+
+	"message" : {
+		"icon" : "/images/info.png"
+	}
+}

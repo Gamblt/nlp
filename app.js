@@ -4,35 +4,34 @@ var highlight = require('console-highlight');
 var notifier = require('node-notifier');
 var path = require('path');
 
-
-var fileToTail = "/var/www/mdm-web/protected/runtime/application.log";
-var lineSeparator= "\n";
-var fromBeginning = false;
-var watchOptions = {}; // as per node fs.watch documentations
-
-
+var config = require('./config');
 
 var arguments = process.argv.slice(2);
 console.log(arguments);
 
-//Pass Laber from params
-var label = "exception"; //Label regexp
+var configname = 'default';
 if (arguments[0] != undefined) {
-	label = arguments[0];
+	configname = arguments[0];
 	console.log("Update label...");
 }
-//Pass Immdiate from params
-var immediate = false;
-if (arguments[1] != undefined) {
-	immediate = true;
-	console.log("Activate Immediate...");
-}
-//Pass filename from params
-if (arguments[3] != undefined) {
-	fileToTail = arguments[3];
-	console.log("Activate FilePath...");
+
+if (!config.load(configname))
+{
+	log("[ERROR] INVALID CONFIG!!!");
+	return;
 }
 
+var message_config = config.get('message');
+
+//error_notify('Test title', message_config.icon, message_config.icon);
+
+var lineSeparator= "\n";
+var fromBeginning = false;
+var watchOptions = {}; // as per node fs.watch documentations
+
+//Pass Laber from params
+var label = config.get('label');
+var immediate = config.get('immediate');
 
 var regular = new RegExp("\\["+label+"\\]");
 
@@ -42,7 +41,7 @@ var counter = 0;
 var error_processing = false;
 var first_error_line = true;
 
-tail = new Tail(fileToTail, lineSeparator, watchOptions, fromBeginning)
+tail = new Tail(config.get('logpath'), lineSeparator, watchOptions, fromBeginning)
 
 tail.on("line", function(data) {
 
@@ -75,7 +74,7 @@ tail.on("line", function(data) {
 			//if immediate
 			log(data);
 		}
-		error_notify(data);
+		error_notify(label, ('Log ['+data+'] found'), message_config.icon);
 	}
 
 	if (error_processing){
@@ -90,11 +89,11 @@ tail.on("error", function(error) {
 tail.watch();
 
 
-function error_notify(data) {
+function error_notify(title, message, image) {
 	notifier.notify({
-		title: 'Log ['+label+'] found',
-		message: data,
-		icon: path.join('/home/ashkarbaliuk/Documents/error.png'), // absolute path (not balloons)
+		title: title,
+		message: message,
+		icon: path.join(__dirname, image), // absolute path (not balloons)
 		sound: true, // Only Notification Center or Windows Toasters
 		wait: true // wait with callback until user action is taken on notification
 	}, function (err, response) {

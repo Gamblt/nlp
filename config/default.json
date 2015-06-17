@@ -1,0 +1,9 @@
+{
+	"logpath" : "/var/www/mdm-web/protected/runtime/application.log",
+	"label" : "error",
+	"immediate" : false,
+
+	"message" : {
+		"icon" : "/images/error.png"
+	}
+}
